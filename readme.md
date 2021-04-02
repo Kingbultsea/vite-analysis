@@ -743,7 +743,7 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
   if (
     __DEV__ &&
     n2.shapeFlag & ShapeFlags.COMPONENT &&
-    hmrDirtyComponents.has(n2.type as Component)
+    hmrDirtyComponents.has(n2.type as Component) // reload: 已经在渲染前运行
   ) {
     // HMR only: if the component has been hot-updated, force a reload.
     return false
