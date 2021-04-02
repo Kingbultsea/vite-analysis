@@ -790,7 +790,7 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 
 提取成为一个参数，作为输入。
 
-### 更改名称或整合功能
+### 更改名称与整合功能
 
 处理模块中间件的文件```moduleMiddleware.ts```修改名称为```moduleResolve.ts```，并且新增寻找```module```路径与模块名称的键值对。为```source map```做准备。
 
