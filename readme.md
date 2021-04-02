@@ -762,3 +762,24 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 
 假如你的```setup```的内容改变，需要重新运行，那么就要经过```2```的处理，所以就需要重新渲染。
 
+# commit-7
+
+### 更新package.json
+
+```json
+{
+  "lint-staged": {
+    "*.js": [
+-     "git add", 
+      "prettier --write"
+    ],
+    "*.ts": [
+-     "git add", 
+      "prettier --parser=typescript --write"
+    ]
+  }
+}
+```
+
+去除```git add```，现在把改动文件丢进暂存区，将不会把你的文件格式化了。在```commit```后，你会发现进行了格式化。
+可以自己尝试一下把某个单括号改成双括号，你会发现```commit```提交后自动变成单括号了。
