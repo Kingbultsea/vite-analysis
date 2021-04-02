@@ -825,4 +825,8 @@ try {
 
 # commit-9
 
- 
+### 整理```vueCompiler.ts```
+
+把处理```template```与```script```的代码，提取出来。
+
+```function compileSFCTemplate``` and ```function compileSFCMain```
