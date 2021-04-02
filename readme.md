@@ -783,3 +783,45 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 
 去除```git add```，现在把改动文件丢进暂存区，将不会把你的文件格式化了。在```commit```后，你会发现进行了格式化。
 可以自己尝试一下把某个单括号改成双括号，你会发现```commit```提交后自动变成单括号了。
+
+# commit-8
+
+### 优化process.cwd(）
+
+提取成为一个参数，作为输入。
+
+### 更改名称或整合功能
+
+处理模块中间件的文件```moduleMiddleware.ts```修改名称为```moduleResolve.ts```，并且新增寻找```module```路径与模块名称的键值对。为```source map```做准备。
+
+```typescript
+// TODO support custom imports map e.g. for snowpack web_modules
+const fileToIdMap = new Map()
+
+  if (id.endsWith('.map')) {
+    sourceMapPath = id
+    id = fileToIdMap.get(id.replace(/\.map$/, ''))
+    if (!id) {
+      res.statusCode = 404
+      res.end()
+      return
+    }
+  }
+
+try {
+    modulePath = resolve(cwd, `${id}/package.json`)
+    if (id === 'vue') {
+    } else {
+      fileToIdMap.set(path.basename(modulePath), id)
+    }
+    sendJSStream(res, modulePath)
+  } catch (e) {
+  }
+```
+
+更改带有处理vue文件并生成语法树功能的```parseSFC.ts```名称为```vueCompiler.ts```
+
+修改监听功能```hmrWatcher.ts```文件名称为```watcher.ts```
+
+# commit-9
+
