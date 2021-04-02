@@ -540,7 +540,9 @@ __script.__hmrId = "/Child.vue"
 
 #### 为什么render要分开引入?
 
-```import "/Child.vue?type=template"```的好处:
+```import "/Child.vue?type=template"```的好处分析：
+
+##### 关于```reload```事件
 
 这里如果你的vue组件改变，```server/hmrWatcher```中会对比新旧AST语法树中的```script```字符，如果是script改变，那么发送```reload```事件，给用户端。客户端识别到```reload```事件，他将使用```esm```的异步引入模块```import().then()```。
 
@@ -560,9 +562,9 @@ case 'reload':
 
 ```javascript
 # vue-next/runtime-core/mountComponent: Function
-// 这个在vue组件开始渲染的时候触发，在mountComponent Component类型才会有
+// 这个在vue组件开始渲染的时候触发，在mountComponent Component类型组件才会有
 if (__DEV__ && instance.type.__hmrId) { // 可以看到需要有__hmrId这个文件路径才会帮你注册
-      registerHMR(instance) // 注册hmr ID 其实就是路径
+      registerHMR(instance) // 注册hmrID 其实就是路径
 }
 
 # vue-next/runtime-core/unmountComponent: Function
@@ -622,7 +624,7 @@ function reload(id: string, newComp: ComponentOptions) {
       queueJob(instance.parent.update)
     } else if (instance.appContext.reload) {
       // root instance mounted via createApp() has a reload method
-      instance.appContext.reload() // 需要调查
+      instance.appContext.reload()
     } else if (typeof window !== 'undefined') {
       // root instance inside tree created via raw render(). Force reload.
       window.location.reload() //
@@ -635,7 +637,49 @@ function reload(id: string, newComp: ComponentOptions) {
 }
 ```
 
+这块检测了组件字段的改变。如果当前组件拥有父组件，调用父组件的```instance.update```方法:![image-20210402102925225](./instance-update.png)
 
+(这里真心建议大家看一下vue-next的渲染流程，不然我也表达不出它原本意思)
 
+[vue-next组件渲染流程图](https://www.processon.com/view/link/5f85c9321e085307a0892f7e)
 
+调用这个方法，目标就是让子组件重新走一次流程，可以让render重新更新，让视图重新抓取effect，大体意思就是渲染子组件。
+
+调用这个方法，目标就是让子组件重新走一次流程，可以让render重新更新，让视图重新抓取effect，大体意思就是渲染子组件。
+
+如果没有子组件，那么调用```instance.appContext.reload```：
+
+```typescript
+export interface AppContext {
+  config: AppConfig
+  mixins: ComponentOptions[]
+  components: Record<string, PublicAPIComponent>
+  directives: Record<string, Directive>
+  provides: Record<string | symbol, any>
+  reload?: () => void // HMR only
+}
+
+// main.js（我们vue项目的入口文件） 中的 createApp(Comp).mount('#app')
+function mount(rootContainer: HostElement, isHydrate?: boolean): any {
+        if (!isMounted) {
+          const vnode = createVNode(Comp as Component, rootProps)
+          vnode.appContext = context
+          // HMR root reload for reload
+          if (__DEV__) {
+            context.reload = () => {
+              render(cloneVNode(vnode), rootContainer)
+            }
+          }
+}
+```
+
+所以看到，本质上就是调用render，这和一整个vue渲染流程是一样的。
+
+![render](./render.png)
+
+[^vue-next组件渲染流程图]: [链接](https://www.processon.com/view/link/5f85c9321e085307a0892f7e)
+
+如果也没有```reload```，执行```window.loaction.reload()```（没有分析出什么环境才会触发，毕竟dev环境下，必有reload，留个坑，暂时认为是```vue-next```的保守行为）
+
+##### 关于```rerender事件```：
 
