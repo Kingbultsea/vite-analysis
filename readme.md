@@ -830,3 +830,20 @@ try {
 把处理```template```与```script```的代码，提取出来。
 
 ```function compileSFCTemplate``` and ```function compileSFCMain```
+
+### watcher.ts
+
+如果没有AST语法树，则不做任何处理。
+
+```typescript
+if (file.endsWith('.vue')) {
+      // check which part of the file changed
+      const [descriptor, prevDescriptor] = await parseSFC(file)
+-      if (!prevDescriptor) {
++      if (!descriptor || !prevDescriptor) {
+        // the file has never been accessed yet
+        return
+      }
+}
+```
+
