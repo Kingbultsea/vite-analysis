@@ -683,3 +683,82 @@ function mount(rootContainer: HostElement, isHydrate?: boolean): any {
 
 ##### 关于```rerender事件```：
 
+文件改动到的仅仅是模板（```template```），像对比```script```那样，如果有变动```server```端则发送一个```rerender```事件到```client```客户端。```client```客户端收到```rerender```，触发```__VUE_HMR_RUNTIME__.rerender```。
+
+```javascript
+# client/client.ts    
+case 'rerender':
+      import(`${path}?type=template&t=${Date.now()}`).then((m) => {
+        __VUE_HMR_RUNTIME__.rerender(path, m.render)
+        console.log(`[vds] ${path} template updated.`)
+      })
+      break
+```
+
+接着查看```vue-next```的```rerender```方法:
+
+```javascript
+# vue-next/runtime-core/hmr.ts
+function rerender(id: string, newRender?: Function) { // id为path路径
+  const record = map.get(id)
+  if (!record) return
+  // Array.from creates a snapshot which avoids the set being mutated during
+  // updates
+  Array.from(record).forEach(instance => {
+    if (newRender) {
+      instance.render = newRender as InternalRenderFunction // 更新vnode
+    }
+    instance.renderCache = []
+    // this flag forces child components with slot content to update
+    isHmrUpdating = true
+    instance.update() // 调用自身update
+    isHmrUpdating = false
+  })
+}
+```
+
+#### 结论
+
+```rerender```用在```template```，使用```instance.update```。
+
+```reload```用在```script```，使用```instance.parent.update```/```render```。
+
+```script```包含了```template```的更新，分开的做法，好处在```template```更新的时候，只更新组件自身的树，```script```是从父树开始的。
+
+##### 为什么```script```需要从```parent```更新？
+
+查看组件渲染的三大块:
+
+1.```createComponentInstance``` 创建```instance```，一个组件相关的```Object```。
+
+2.```setupComponent```，对attrs的一些处理 还有```setup```的处理```instance.type```中的所有关键词字段的处理。
+
+3.````setupRenderEffect```，2xOptionsAPI与```render```的处理。
+
+因为```script```的改变，会有可能变动到功能点```2```，但是调用父组件的更新？不是只会走```updateComponent```的参数更新功能？
+
+```javascript
+# vue-next/runtime-core/vnode.ts
+export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
+  if (
+    __DEV__ &&
+    n2.shapeFlag & ShapeFlags.COMPONENT &&
+    hmrDirtyComponents.has(n2.type as Component)
+  ) {
+    // HMR only: if the component has been hot-updated, force a reload.
+    return false
+  }
+  return n1.type === n2.type && n1.key === n2.key
+}
+```
+
+可以看到不走```updateComponent```，强行走渲染```1```，```2```，```3```的流程。
+
+所以可以得出：这是为了优化```template```，不需要走上级的更新。
+
+##### 为什么要走重新渲染呢？不是万物皆render?
+
+不是这样说的，```template```的改变，只会影响到你的参数，而实际上render又是script变动的一部分，在手写```render```的情况下，是走重新渲染的（不探讨为什么手写render也要走重新渲染，我目前觉得不需要重新渲染，vite可以优化一下）。
+
+假如你的```setup```的内容改变，需要重新运行，那么就要经过```2```的处理，所以就需要重新渲染。
+
