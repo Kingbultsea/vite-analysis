@@ -733,7 +733,7 @@ function rerender(id: string, newRender?: Function) { // id为path路径
 
 2.```setupComponent```，对attrs的一些处理 还有```setup```的处理```instance.type```中的所有关键词字段的处理。
 
-3.````setupRenderEffect```，2xOptionsAPI与```render```的处理。
+3.```setupRenderEffect```，2xOptionsAPI与```render```的处理。
 
 因为```script```的改变，会有可能变动到功能点```2```，但是调用父组件的更新？不是只会走```updateComponent```的参数更新功能？
 
