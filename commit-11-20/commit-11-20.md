@@ -32,7 +32,7 @@
 
 因为```dist```是```build```的文件，```/bin/vite.js```是启动文件，所以这一部分发布到```npm```，提供用户使用即可。
 
-### commit-15 v0.1.1发布
+# commit-15 v0.1.1发布
 
 ```json
 {
@@ -41,11 +41,11 @@
 }
 ```
 
-### commit-16 
+# commit-16 
 
 ```chore: readme```，修改```readme```。
 
-### commit-17 添加ci
+# commit-17 添加ci
 
 ```yml
 version: 2
@@ -90,3 +90,17 @@ workflows:
 
 ```
 
+1. 在自身```Github```上，创建一个```public```仓库，命名为```sbuild```，并把上传这一份代码。
+2. 使用该```github```账号登录```circleci```网站，在目录列表点击```Set Up Project ```。
+
+![](./circle-view.png)
+
+3. 点击```Start Building``
+
+![](./circle-test.png)
+
+（失败可以不用管，这是运行test命令失败，在不同平台有些不一样）
+
+### ```circleci/config.yml```
+
+# commit-18
