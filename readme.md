@@ -762,7 +762,7 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 
 假如你的```setup```的内容改变，需要重新运行，那么就要经过```2```的处理，所以就需要重新渲染。
 
-# commit-7
+# commit-7 去除git add
 
 ### 更新package.json
 
@@ -784,7 +784,7 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 去除```git add```，现在把改动文件丢进暂存区，将不会把你的文件格式化了。在```commit```后，你会发现进行了格式化。
 可以自己尝试一下把某个单括号改成双括号，你会发现```commit```提交后自动变成单括号了。
 
-# commit-8
+# commit-8 优化cwd
 
 ### 优化process.cwd(）
 
@@ -823,7 +823,7 @@ try {
 
 修改监听功能```hmrWatcher.ts```文件名称为```watcher.ts```
 
-# commit-9
+# commit-9 整合优化
 
 ### 整理```vueCompiler.ts```
 
@@ -847,3 +847,105 @@ if (file.endsWith('.vue')) {
 }
 ```
 
+
+
+# commit-10 style HMR
+
+### 新增事件
+
+原有事件：
+```reload```：```<script>```的更新，会触发此事件（拥有```scoped```的样式也会触发，这里只留下坑位）
+```rerender```：```<template>```的更新，会触发此事件。
+
+新增：
+```style-update```：发送给```client```更新```css```的消息。
+
+```typescript
+nextStyles.forEach((_, i) => {
+        if (!prevStyles[i] || !isEqual(prevStyles[i], nextStyles[i])) {
+          send({
+            type: 'style-update',
+            path: resourcePath,
+            index: i
+          })
+        }
+})
+```
+
+```style-remove```：发送给```client```删除```css```的消息
+
+### ```hash-sum```包
+
+生成hash，例如```hash_sum(resourcePath)```，```style-remove```事件需要用到，识别对应```vue```组件的```id```。
+
+### ```watcher.ts```
+
+整合代码，包括前面说的新增两个事件。
+
+### ```client.ts```
+
+新增事件，同上。
+
+### ```vueCompiler.ts```
+
+新增对```style```的处理：
+
+```typescript
+if (descriptor.styles) {
+    descriptor.styles.forEach((s, i) => {
+      if (s.scoped) hasScoped = true
+      code += `\nimport ${JSON.stringify(
+        pathname + `?type=style&index=${i}${timestamp}`
+      )}`
+    })
+    if (hasScoped) {
+      code += `\n__script.__scopeId = "data-v-${hash(pathname)}"`
+    }
+}
+
+
+function compileSFCStyle(
+  res: ServerResponse,
+  style: SFCStyleBlock,
+  index: string,
+  filename: string,
+  pathname: string
+) {
+  const id = hash(pathname)
+  const { code, errors } = compileStyle({
+    source: style.content,
+    filename,
+    id: `data-v-${id}`,
+    scoped: style.scoped != null
+  })
+  // TODO css modules
+
+  if (errors) {
+    // TODO
+  }
+  sendJS(
+    res,
+    `
+const id = "vue-style-${id}-${index}"
+let style = document.getElementById(id)
+if (!style) {
+  style = document.createElement('style')
+  style.id = id
+  document.head.appendChild(style)
+}
+style.textContent = ${JSON.stringify(code)}
+  `.trim()
+  )
+}
+```
+
+遇到vue的```AST```的```style```，检测```<style>```是否添加了```scoped```（因为一个组件可以写多个```<style>```，所以用了```forEach```），如果有则：
+
+```typescript
+import hash from 'hash-sum'
+if (hasScoped) {
+      code += `\n__script.__scopeId = "data-v-${hash(pathname)}"`
+}
+```
+
+以上```style```功能还没有测试用例完善。
