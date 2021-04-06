@@ -3,7 +3,9 @@
 ```json
 {
 -   version: "0.1.1"
-+   propublishOnly: "0.1.2"    
++   version: "0.1.2"    
 }
 ```
+
+# commit-22 重构使用koa，废弃server-handler
 
