@@ -1,8 +1,8 @@
-# commit-11
+# commit-11 annotation
 
 添加测试注释（准备测试style HMR）。
 
-# commit-12
+# commit-12 fix propublishOnly
 
 注释。
 
@@ -19,7 +19,7 @@
 
 修改旧名称 ```vds```为```vite```，包括注释，控制台输出，只是更改名称。
 
-# commit-14
+# commit-14 设置npm包含的文件
 
 `files` 字段用于描述我们使用 `npm publish` 命令后推送到 `npm` 服务器的文件列表，如果指定文件夹，则文件夹内的所有内容都会包含进来。我们可以查看下载的 `antd` 的 `package.json` 的`files` 字段，内容如下：
 
@@ -41,7 +41,7 @@
 }
 ```
 
-# commit-16 
+# commit-16  chore readme
 
 ```chore: readme```，修改```readme```。
 
@@ -52,7 +52,7 @@ version: 2
 
 defaults: &defaults
   docker:
-    - image: vuejs/ci
+    - image: vuejs/ci # https://hub.docker.com/r/vuejs/ci
 
 step_restore_cache: &restore_cache
   restore_cache:
@@ -95,12 +95,45 @@ workflows:
 
 ![](./circle-view.png)
 
-3. 点击```Start Building``
+3. 点击``Start Building``
 
 ![](./circle-test.png)
 
 （失败可以不用管，这是运行test命令失败，在不同平台有些不一样）
 
-### ```circleci/config.yml```
+# commit-18 test: fix pupeteer on ci
 
-# commit-18
+修复在```ci```环境下的，```puppeteer```报错问题（如上报错）。
+
+![](circle-sussess.png)
+
+# commit-19 使用本包，如果用户没有vue
+
+### moduleResolver.ts
+
+整理代码，如果用户本地路径没有寻找到```vue.runtime.esm-browser.js```，则从本包中读取```vue.runtime.esm-browser.js```。
+
+# commit-20 fix: vue路径 & compile-sfc路径
+
+### moduleResolver.ts
+
+```vue.runtime.esm-browser.js```的寻找方式：从cwd层级查找。
+
+```cwd```目录下的```vue```版本需要和本包中的```vue```版本一致，不然报错，且```compiler-sfc```使用本包中的```vue/compiler-sfc```。
+
+如果用户不存在```vue```包，则```compiler-sfc```与```vue.runtime.esm-browser.js```均使用本包的。
+
+这里主要是在客户端```import vue```的时候，顺带设置好```vueCompiler.ts```中需要的```compiler-sfc```。
+
+### vueCompiler.ts
+
+```typescript
+import {
+  SFCDescriptor,
+  SFCStyleBlock,
+  SFCTemplateBlock
+} from '@vue/compiler-sfc'
+```
+
+SFC三个类型从本包取，编译功能从```moduleResolver.ts```中取```resolveCompiler```。
+

@@ -823,6 +823,14 @@ try {
 
 修改监听功能```hmrWatcher.ts```文件名称为```watcher.ts```
 
+### 更改resolve-cwd为resolve-from
+
+在```moduleResolver```，中会寻找包。
+
+```resolve-cwd```: 从当前工作路径寻找。
+
+```resolve-from```: 从给出的路径寻找。
+
 # commit-9 整合优化
 
 ### 整理```vueCompiler.ts```
