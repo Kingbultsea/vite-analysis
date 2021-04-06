@@ -35,7 +35,7 @@ app.use(require('koa-static')(cwd))
 4. ```koa2-history-api-fallback```。
 5. ```koa-static```。
 
-# commit-23
+# commit-23 index.html的指向
 
 去除```koa```的中间件```koa2-history-api-fallback```，采用手写的方法```src/server/middlewares/historyFallback.ts```。
 
@@ -74,4 +74,35 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 ```
 
 因为使用```koa2-history-api-fallback```，会把所有get请求都指向一个文件，如果请求一个```.vue```组件，在进行流程的第```4```步，内容必然会被改写成```index.html```文件。
+
+# commit-24 改写```index.html```的```<script>```
+
+曾经```index.html```请求页面，页面中的标签，引入```main.js```，经过```moduleRewriter.ts```处理，```import a from 'a'```改写成```import a from '__module/a'```。
+
+现在把这个功能也用在浏览器请求```index.html```中的```<script>```。
+
+优化目的提前一步改写处理。
+
+# commit-25
+
+### 更改名称:
+
+```vueResole.ts``` -> ```resolveVue.ts``
+
+### 优化改写```import```路径的代码结构
+
+去除```moduleRewriter.ts```，并且把该```rewrite```功能合并到```middlewares/modules.ts```，由于这个用来改写```import```的，所以名称更改为```rewriteImports```。
+
+好处是：原本在vue中间件，模块中间件，都需要指向```__modules```的功能，移交给```modules.ts```统一处理，
+
+通过中间件，好管理代码。
+
+# commit-26 v0.2.0发布
+
+```json
+{
+-   version: "0.1.2"
++   version: "0.2.0"    
+}
+```
 
