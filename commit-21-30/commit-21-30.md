@@ -106,3 +106,26 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 }
 ```
 
+# commit-27 准备```vite```配置
+
+### ```build```前需要删除dist: 
+
+```json
+{
+    script: {
+        // 不支持windows
+        build: "rm -rf dist && tsc -p src/client && tsc -p src/server"
+    }
+}
+```
+
+### ```server/index.ts```
+
+暴露可配置的server，交付给```./bin/vite.js```去建立服务，同时添加```https```选项。
+
+启动```vite```，以命令行的形式去输入配置（这块有BUG，还没完善）
+
+# commit-28 ```cwd```名称优化
+
+```cwd```参数名称改为```root```，尤大觉得因为寻找模式，直接改为```root```会更加贴切（我觉得尤大觉得）。
+
