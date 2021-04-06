@@ -136,4 +136,3 @@ import {
 ```
 
 SFC三个类型从本包取，编译功能从```moduleResolver.ts```中取```resolveCompiler```。
-
