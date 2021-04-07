@@ -137,3 +137,8 @@ v0.3.2
 
 # commit- 39
 
+请求的```.vue```文件，如果有```timestamp```，则其所有```import```语句所请求的文件，均带上该```timestamp```。
+
+### 缓存import语句
+
+![cache](./cache.png)
