@@ -213,7 +213,7 @@ const [descriptor, prevDescriptor] = await parseSFC(file)
 
 ### moduleMiddleware.js
 
-1. 处理```__modules```的```moduleMiddleware.js```曾经使用```require.resolve('abc')```确定路径，现在改为使用```resolve-cwd```模块。不同之处在于```resolve-cwd```仅会在当前工作目录中（命令行当前的路径）寻找。
+1. 处理```__modules```的```moduleMiddleware.js```曾经使用```require.resolve('abc')```确定路径，现在改为使用```resolve-cwd```模块。不同之处在于```resolve-cwd```会在命令行当前的路径**开始**寻找，其他行为与```require.resolve```一致。
    ```http://localhost:3000/__modules/vue``` -->```命令行当前目录/node_modules/vue/index.js```
    如果是用```require.resolve```，且当前工作目录下没有vue模块（当然更没有当前vue包，详情看文章），则会在当前命令行目录的上级路径查找模块，直到没有为止。
 
@@ -827,9 +827,11 @@ try {
 
 在```moduleResolver```，中会寻找包。
 
-```resolve-cwd```: 从当前工作路径寻找。
+```resolve-cwd```: 从当前命令行路径开始寻找。
 
-```resolve-from```: 从给出的路径寻找。
+```resolve-from```: 从给出的路径开始寻找。
+
+以上两个寻找行为与require.resolve一致，仅仅是入口方式不同。
 
 # commit-9 整合优化
 
