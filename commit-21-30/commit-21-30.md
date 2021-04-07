@@ -17,7 +17,7 @@
 
 #### ```koa2-history-api-fallback```:
 
-使用koa2-connect-history-api-fallback之后，koa就会把所有的get方式的请求都发给/index.html,然后由vue-router来接管页面路由。
+使用```koa2-connect-history-api-fallback```之后，```koa```就会把所有的get方式的请求都发给```/index.html```,然后由vue-router来接管页面路由。
 
 #### ```koa-static```:
 
@@ -99,6 +99,8 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 
 # commit-26 v0.2.0发布
 
+这个版本的```<style>```新增标签后，触发了```rerender```，会导致新增```<style>```无效
+
 ```json
 {
 -   version: "0.1.2"
@@ -129,3 +131,39 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 
 ```cwd```参数名称改为```root```，尤大觉得因为寻找模式，直接改为```root```会更加贴切（我觉得尤大觉得）。
 
+# commit-29 重构```rewriteImports```
+
+### 引入```es-module-lexer```
+
+处理AST语法树，使用在修改```import```所引入的文件。
+
+```typescript
+// 使用新的包，重写rewriteImports
+function rewriteImports(source: string) {
+  const [imports] = parse(source)
+
+  if (imports.length) {
+    const s = new MagicString(source)
+    let hasReplaced = false
+    imports.forEach(({ s: start, e: end, d: dynamicIndex }) => {
+      const id = source.substring(start, end)
+      if (dynamicIndex < 0) {
+        if (/^[^\/\.]/.test(id)) {
+          s.overwrite(start, end, `/__modules/${id}`)
+          hasReplaced = true
+        }
+      } else {
+        // 异步引入import的路径还没有改写
+        // TODO dynamic import
+      }
+    })
+    return hasReplaced ? s.toString() : source
+  }
+
+  return source
+}
+```
+
+# commit-30 名称优化
+
+更改参数名称，更改原有的```src/server/middleware``` 为```src/server/plugins```
