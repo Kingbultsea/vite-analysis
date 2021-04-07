@@ -148,7 +148,7 @@ function rewriteImports(source: string) {
     imports.forEach(({ s: start, e: end, d: dynamicIndex }) => {
       const id = source.substring(start, end)
       if (dynamicIndex < 0) {
-        if (/^[^\/\.]/.test(id)) {
+        if (/^[^\/\.]/.test(id)) { // 匹配 / 和 .
           s.overwrite(start, end, `/__modules/${id}`)
           hasReplaced = true
         }

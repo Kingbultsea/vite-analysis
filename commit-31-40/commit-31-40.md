@@ -99,3 +99,41 @@ export const vueCache = new LRUCache<string, CacheEntry>({
 当新增```<style scoped>```，再去添加```class```样式不起效。
 https://github.com/vuejs/vue-next/issues/3382
 
+# commit-35 304将不再处理内容
+
+```modulesPlugin```中判断请求304，将不再处理内容。
+
+```typescript
+const internalPlugins: Plugin[] = [
+  modulesPlugin,
+  vuePlugin,
+  hmrPlugin,
+  servePlugin
+]
+
+# modulesPlugin的部分代码
+app.use(async (ctx, next) => {
+    await next()
+    
+    if (ctx.status === 304) {
+      return
+    }
+})
+```
+
+根据洋葱模型，```modulesPlugin```判断```304```处于所有中间件执行的最后一个步骤。
+
+# commit-36 v0.3.1
+
+v0.3.1
+
+# commit-37 删除无用的包
+
+删除```@babel/parser```
+
+# commit-38 v0.3.2
+
+v0.3.2
+
+# commit- 39
+
