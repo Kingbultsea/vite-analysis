@@ -135,10 +135,52 @@ v0.3.1
 
 v0.3.2
 
-# commit- 39
+# commit- 39 缓存import行为，```js```的```hmr```
 
-请求的```.vue```文件，如果有```timestamp```，则其所有```import```语句所请求的文件，均带上该```timestamp```。
+### ```rewriteImports```
 
-### 缓存import语句
+遇到```/^[^\/\.]/.test(id)```，改写成为```__modules/${id}```。
 
-![cache](./cache.png)
+例如：
+```import { ref } from 'vue'``` -> ```import { ref } from '__module/vue'```
+
+### 缓存被改写的import语句
+
+![cache](./A@B5FF6KI9XL_FKRY$U80CR.png)
+
+目的是，收集所有需要```hmr```的```非模块文件```。
+
+### ```hmr.ts```
+
+预期想使用```importeeMap```，获得关系链，进行```HMR```的一些东西。
+
+未知完整行为~
+
+# commit-40 未知
+
+# ```modules.ts```
+
+```typescript
+async function resolveWebModule(
+  root: string,
+  id: string
+): Promise<string | undefined> {
+  const webModulePath = webModulesMap.get(id)
+  if (webModulePath) {
+    return webModulePath
+  }
+  const importMapPath = path.join(root, 'web_modules', 'import-map.json')
+  if (await fs.stat(importMapPath).catch((e) => false)) {
+    const importMap = require(importMapPath)
+    if (importMap.imports) {
+      const webModulesDir = path.dirname(importMapPath)
+      Object.entries(
+        importMap.imports
+      ).forEach(([key, val]: [string, string]) =>
+        webModulesMap.set(key, path.join(webModulesDir, val))
+      )
+      return webModulesMap.get(id)
+    }
+  }
+}
+```
