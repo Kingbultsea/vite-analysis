@@ -156,9 +156,13 @@ v0.3.2
 
 未知完整行为~
 
-# commit-40 未知
+# commit-40 ```snowPack```
 
-# ```modules.ts```
+https://github.com/vitejs/vite/pull/4
+
+详细可以去看这个```pr```了，支持```snowpack```。
+
+### ```modules.ts```
 
 ```typescript
 async function resolveWebModule(
