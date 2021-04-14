@@ -135,7 +135,7 @@ v0.3.1
 
 v0.3.2
 
-# commit- 39 缓存import行为，```js```的```hmr```
+# commit- 39 构建```js-map```，```js```的```hmr```
 
 ### ```rewriteImports```
 
@@ -144,7 +144,7 @@ v0.3.2
 例如：
 ```import { ref } from 'vue'``` -> ```import { ref } from '__module/vue'```
 
-### 缓存被改写的import语句
+### 构建```js```关系链
 
 ![cache](./A@B5FF6KI9XL_FKRY$U80CR.png)
 
