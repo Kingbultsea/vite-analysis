@@ -146,6 +146,10 @@ v0.3.2
 例如：
 ```import { ref } from 'vue'``` -> ```import { ref } from '__module/vue'```
 
+如果遇到：
+
+```import { a } from './vue'``` 不做处理。通俗来说，我们如何写node引入模块，就把我们引入的路径给改写。
+
 ### 构建```js```关系链
 
 ![cache](./A@B5FF6KI9XL_FKRY$U80CR.png)
