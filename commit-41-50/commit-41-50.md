@@ -148,3 +148,54 @@ async function handleVueSFCReload(file: string, servedPath: string) {
   }
 ```
 
+
+
+# commit-42
+
+## package.json
+
+增加@babel/parser。
+
+## client.ts
+
+之前请求文件，参数t为客户端的时间戳，现在更改为服务器给的时间戳（统一交给服务器处理）：
+
+```typescript
+- const { type, path, id, index } = JSON.parse(data)
++ const { type, path, id, index, timestamp } = JSON.parse(data)
+
+// 例
+- import(`${path}?type=template&t=${Date.now()}`)
++ import(`${path}?type=template&t=${timestamp}`)
+
+```
+
+
+
+更改事件名称：
+
+```reload``` -> ```vue-reload```
+
+```rerender``` -> ```vue-rerender```
+
+```style-update``` -> ```vue-style-update```
+
+新增事件：
+
+```js-update```
+
+### ```js-update```
+
+还没完善，可以看到```hot```，对于js文件的hmr仅仅是重新拉取再运行一次（如果是有状态的，状态还是会继续保留，且出现重复，期待后续修复）
+
+## ```hmr.ts```
+
+更换事件名称，补上```isHotBoundary```方法，并更改名称为```isHMRBoundary```。
+
+
+
+
+
+## 总结
+
+为了```js```文件的```hmr```做准备
