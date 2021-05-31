@@ -23,10 +23,6 @@
 
 4. ```importee```路径下的文件，每一个都调用方法(还没写)
 
-   ```typescript
-   
-   ```
-
    
 
 #### 回顾一下流程
@@ -152,6 +148,20 @@ async function handleVueSFCReload(file: string, servedPath: string) {
 
 # commit-42
 
+## 小知识点
+
+https://zh.javascript.info/regexp-multiline-mode
+
+多行匹配
+
+```typescript
+let str = `1st place: Winnie
+2nd place: Piglet
+33rd place: Eeyore`;
+
+alert( str.match(/^\d+/gm) ); // 1, 2, 33
+```
+
 ## package.json
 
 增加@babel/parser。
@@ -194,8 +204,19 @@ async function handleVueSFCReload(file: string, servedPath: string) {
 
 
 
-
-
 ## 总结
 
 为了```js```文件的```hmr```做准备
+
+# commit-43 优化寻找包的方式
+
+之前使用```require()```，现在读取```package.json```文件，识别```module```、```main```字段，如果没有则直接寻找```index.js```文件。
+
+# commit-44 优化sourcemap获取名
+
+在```sourcemap```功能，使用```path.basename```，获取路径的名称。
+
+![sourcemap](./sourcemap.png)
+
+# commit-45
+
