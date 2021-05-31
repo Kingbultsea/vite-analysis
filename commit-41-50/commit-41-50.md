@@ -226,3 +226,54 @@ alert( str.match(/^\d+/gm) ); // 1, 2, 33
 
 为```style lang="x"``` 做准备
 
+# commit-46 修改README
+
+chore: 更新reademe。把vue改成vue3。（莫非尤大想兼容v2?）
+
+# commit-47
+
+## package.json
+
+v4.0.0发布，这里讨论到发布，看不大懂尤大的ci。
+
+https://hub.docker.com/r/vuejs/ci
+
+# commit-48 代码整理
+
+## 重构监听文件的方式
+
+把```server/plugins/hmr.ts```的监听文件变化的代码，移动到```server/index.ts```，通过传递参数```FSWatcher```给```hmr.ts```的方式使用。
+
+其次可以暴露给各种```plugins```使用，比如commit-49中，监听文件变动后删除缓存。
+
+# commit-49  modules使用缓存
+
+## ```server/plugins/modules.ts```
+
+利用watch，监听文件变动，变动的文件，删除缓存。因为变动的文件，需要更新。
+
+缓存的文件有：
+
+1. ```/index.html```
+2. 普通``` .js```文件
+
+除此之外，还有一些补丁，比如在重写普通```js文件```的```import```句柄时，要排除```.map``` 文件。
+
+比如在``` rewriteImports```出现报错的时候，捕获该错误，输出```e```。
+
+# commit-50 添加debug包
+
+## package.json
+
+添加```debug@4.1.1```，去除```console.log```，增强提示。
+
+从尤大写的提示语句，可以发现是为了方便调试，因为目前还测试覆盖还很低，需要一些提示去调试。
+
+涉及：
+
+1. ```server/plugins/hmr.ts```
+2. ```server/plugins/modules.ts```
+3. ```serve.ts```
+
+这块也是方便了我们去查看vite到底做了些啥，可以有一个反馈。
+
