@@ -218,5 +218,11 @@ alert( str.match(/^\d+/gm) ); // 1, 2, 33
 
 ![sourcemap](./sourcemap.png)
 
-# commit-45
+# commit-45 修复css bug
+
+```
++ await resolveCompiler
+```
+
+为```style lang="x"``` 做准备
 
