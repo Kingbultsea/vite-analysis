@@ -277,3 +277,8 @@ https://hub.docker.com/r/vuejs/ci
 
 这块也是方便了我们去查看vite到底做了些啥，可以有一个反馈。
 
+
+
+添加```chalk```，增强提示，用在```node/build.ts```
+
+https://www.npmjs.com/package/chalk
