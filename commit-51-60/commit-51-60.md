@@ -38,7 +38,7 @@
 
 ## 新增```node/build.ts```
 
-使用```rollup```打包，引入```rollup```的方式很特别。通过这种方式，有效减少打包vite这个工具包的体积（如文字说，```import```的作用仅仅是当作```type```来使用，会被```treeShaking```掉，可以构建后查看```build.js```，```rollup```的引入会被去除）
+使用```rollup```进行打包。引入```rollup```的方式很特别，有效减少打包vite这个工具包的体积（如文字说，```import```的作用仅仅是当作```type```来使用，会被```treeShaking```掉，可以构建后查看```build.js```，```rollup```的引入会被去除）
 
 ``````typescri
 function build() {
@@ -96,6 +96,8 @@ const vitePlugin: Plugin = {
 
 
 ### cssExtractPlugin
+
+收集所有```styles code```，粘连所有```styles code```，生成一个```css```文件。
 
 需要放在处理SFC的Plugins的后面。
 
