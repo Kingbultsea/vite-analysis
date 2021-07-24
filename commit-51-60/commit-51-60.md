@@ -318,3 +318,15 @@ watcher.on('change', async (file) => {
 2. 如果引入方为```vue```文件，触发```vue-reload```
 
 todo
+
+# commit-54
+
+更新rollup-plugin-vue包
+
+```json
+{
+-    “rollup-pkugin-vue”: "6.0.0-alpha.1"
++    “rollup-pkugin-vue”: "6.0.0-alpha.1"
+}
+```
+
