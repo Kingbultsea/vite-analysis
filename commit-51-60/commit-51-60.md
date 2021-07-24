@@ -236,7 +236,9 @@ return script
 
 # commit-53
 
-## 细谈文件改动
+修改测试的命令，路径为src。
+
+## 再细谈文件改动
 
 ```typescript
 watcher.on('change', async (file) => {
@@ -310,5 +312,9 @@ watcher.on('change', async (file) => {
          break
    ```
 
-   
+### ```handleJSReload``` // todo
 
+1. 分析```importerMap```，取出所有```import```了**当前文件的路径**。
+2. 如果引入方为```vue```文件，触发```vue-reload```
+
+todo
