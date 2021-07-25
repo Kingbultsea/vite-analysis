@@ -312,12 +312,29 @@ watcher.on('change', async (file) => {
          break
    ```
 
-### ```handleJSReload``` // todo
+### ```handleJSReload```
 
-1. 分析```importerMap```，取出所有```import```了**当前文件的路径**。
+1. 分析```importerMap```，取出所有```import```了**当前文件的文件路径**。
 2. 如果引入方为```vue```文件，触发```vue-reload```
+3. todo 待分析，留坑（死循环```import```处理，```client```端的```update``` ```hot```）
 
-todo
+windows中存在BUG，需要修改:
+
+```typescript
+watcher.on('change', async (file) => {
+    const timestamp = Date.now()
+    console.log(root, file)
+    const servedPath = '/' + path.relative(root, file)
+    if (file.endsWith('.vue')) {
+      handleVueSFCReload(file, servedPath, timestamp)
+    } else {
+        // savedPath 需要替换 '/' 为 '\'
+      handleJSReload(servedPath, timestamp)
+    }
+  })
+```
+
+
 
 # commit-54
 
