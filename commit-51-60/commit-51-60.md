@@ -462,3 +462,28 @@ updateStyle("92a6df80-0", "/Comp.vue?type=style&index=0")
 # commit-55 错误提示
 
 在各种错误捕获中，增加提示。
+
+# commit-56 在plugin-vue中使用css预处理器
+
+```typescript
+plugins:[
+    // ...
+    require('rollup-plugin-vue')({
+        // TODO: for now we directly handle pre-processors in rollup-plugin-vue
+        // so that we don't need to install dedicated rollup plugins.
+        // In the future we probably want to still use rollup plugins so that
+        // preprocessors are also supported by importing from js files.
+        preprocessStyles: true,
+        preprocessCustomRequire: (id: string) => require(resolve(root, id))
+        // TODO proxy cssModules config
+      })
+    // ...
+]
+```
+
+
+
+在处理```SFC组件```中使用预处理器，这样我们就不需要在```rollup```中使用```css预处理器```了
+
+[rollup-plugin-vue配置传送门](https://github.com/vuejs/rollup-plugin-vue#options)
+
