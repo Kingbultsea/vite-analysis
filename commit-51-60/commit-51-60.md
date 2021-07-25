@@ -444,3 +444,21 @@ const publicGetter = publicPropertiesMap[key]
 
 ![type字段详解](./global.png)
 
+## 关于这一块的HMR
+
+处理SFC组件的时候，添加了
+
+```typescript
+const __cssModules = __script.__cssModules = {}
+import __style0 from "/Comp.vue?type=style&index=0&module"
+__cssModules["$style"] = __style0
+updateStyle("92a6df80-0", "/Comp.vue?type=style&index=0")
+```
+
+如果我们在```<style>```标签上添加，或者删除属性，```client```端都会触发```vue-style-update```事件，这表示如果**删除**，并不会引起任何```js```上的改变，也就是说```__cssModules["$style"] = __style0```依旧存在，这与```scopedId```是同理的。
+
+注：新增会触发```vue-reload```事件（```!isEqual(descriptor.script, prevDescriptor.script)```引起的）
+
+# commit-55 错误提示
+
+在各种错误捕获中，增加提示。
