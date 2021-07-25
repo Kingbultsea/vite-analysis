@@ -334,8 +334,6 @@ watcher.on('change', async (file) => {
   })
 ```
 
-
-
 # commit-54
 
 更新rollup-plugin-vue包
@@ -346,4 +344,103 @@ watcher.on('change', async (file) => {
 +    “rollup-pkugin-vue”: "6.0.0-alpha.1"
 }
 ```
+
+# commit-55 支持css module
+
+```vue
+<style module>
+    .foo {
+        color: red;
+    }
+</style>
+```
+
+```typescript
+export declare interface SFCStyleBlock extends SFCBlock {
+    type: 'style';
+    scoped?: boolean;
+    module?: string | boolean;
+}
+```
+
+```css-module```原理是生成一个js文件:
+
+```typescript
+export default {"foo":"_foo_dq1k9_3"}
+```
+
+使用的时候访问```$style.foo```，即返回```_foo_dq1k9_3```
+
+```js
+import { updateStyle } from "/@hmr"
+
+import Child from './Child.vue'
+import tool from './tool.js'
+
+const __script = {
+  components: { Child },
+  setup() {
+    return {
+      count: 2
+    }
+  }
+}
+
+const __cssModules = __script.__cssModules = {}
+import __style0 from "/Comp.vue?type=style&index=0&module"
+__cssModules["$style"] = __style0
+updateStyle("92a6df80-0", "/Comp.vue?type=style&index=0")
+import { render as __render } from "/Comp.vue?type=template"
+__script.render = __render
+__script.__hmrId = "/Comp.vue"
+__script.__file = "E:\\vite\\test\\fixtures\\Comp.vue"
+export default __script
+```
+
+## vue css module知识
+
+```typescript
+const publicPropertiesMap: Record<
+  string,
+  (i: ComponentInternalInstance) => any
+> = {
+  $: i => i,
+  $el: i => i.vnode.el,
+  $data: i => i.data,
+  $props: i => (__DEV__ ? shallowReadonly(i.props) : i.props),
+  $attrs: i => (__DEV__ ? shallowReadonly(i.attrs) : i.attrs),
+  $slots: i => (__DEV__ ? shallowReadonly(i.slots) : i.slots),
+  $refs: i => (__DEV__ ? shallowReadonly(i.refs) : i.refs),
+  $parent: i => i.parent && i.parent.proxy,
+  $root: i => i.root && i.root.proxy,
+  $emit: i => i.emit,
+  $options: i => (__FEATURE_OPTIONS__ ? resolveMergedOptions(i) : i.type),
+  $forceUpdate: i => () => queueJob(i.update),
+  $nextTick: () => nextTick,
+  $watch: __FEATURE_OPTIONS__ ? i => instanceWatch.bind(i) : NOOP
+}
+```
+
+当我们访问属性```$style```的时候，即是访问```instance.proxy.$style```(vue-next的知识，和普通熟悉访问```data```是一样的，只不过做了一个特殊处理```$```开头命名的变量)，我们询问```publicPropertiesMap```中有没有```$style```这个东西，发现没有，则代表访问```type.__cssModules```:
+
+``````typescript
+// # vue-next源码 instance.proxy handle部分
+
+const publicGetter = publicPropertiesMap[key]
+    let cssModule, globalProperties
+    // public $xxx properties
+    if (publicGetter) {
+      if (key === '$attrs') {
+        track(instance, TrackOpTypes.GET, key)
+        __DEV__ && markAttrsAccessed()
+      }
+      return publicGetter(instance)
+    } else if (
+      // css module (injected by vue-loader)
+      (cssModule = type.__cssModules) &&
+      (cssModule = cssModule[key])
+    )
+``````
+
+![type字段详解](./global.png)
 
