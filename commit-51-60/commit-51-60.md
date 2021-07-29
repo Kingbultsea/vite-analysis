@@ -51,6 +51,8 @@ function build() {
 
 ### 关于rollup
 
+有兴趣的可以了解一下[代码分割](https://rollup.docschina.org/guide/zh/#%E4%BB%A3%E7%A0%81%E5%88%86%E5%89%B2)
+
 #### vitePlugin (rollup的插件)
 
 ```typescript
@@ -150,7 +152,7 @@ require('@rollup/plugin-replace')({
 
 ### rollup-plugin-terser
 
-压缩代码，放在最后用（就是plugins数组的最后一个）。
+压缩代码。
 
 ```typescript
 // 类型
@@ -167,7 +169,7 @@ type Last<T extends any[]> = [never, ...T][T['length']]
     // parse index.html
     // find entry file or script
     // if inline script, create a temp main file next to it before bundling
-    input: path.resolve(root, 'index.html'),
+    input: path.resolve(root, 'index.html'), // rollup也可以处理html文件
     plugins: [
       vitePlugin,
       require('rollup-plugin-vue')(),
@@ -192,10 +194,12 @@ const { output } = await bundle.generate({
 
 
 
-### 过程(未完善)
+### 过程
 
-未完善的原因是```vitePlugin```中的```load```方法并未处理```src```资源，仅处理了标签内的内容
+```vitePlugin```中的```load```方法并未处理```src```资源，仅处理了标签内的内容
 ```<script src="main.js">console.log(1)</script>```
+
+**但是我们可以把```console.log(1)```变成```import 'main.js'```，这样就可以完整打包vue程序了。**
 
 ```typescript
 // vitePlugins中的load方法
@@ -481,9 +485,16 @@ plugins:[
 ]
 ```
 
-
-
 在处理```SFC组件```中使用预处理器，这样我们就不需要在```rollup```中使用```css预处理器```了
 
 [rollup-plugin-vue配置传送门](https://github.com/vuejs/rollup-plugin-vue#options)
 
+# commit-57 修改readme
+
+从版本^0.5.0开始，你可以运行vite build打包应用程序并将其部署到生产环境中。
+
+在内部，我们使用一个默认配置来生成构建。目前有意没有公开方法来配置构建——但我们可能会在稍后阶段解决这个问题。
+
+# commit-58 发布v0.5.0
+
+release v0.5.0
