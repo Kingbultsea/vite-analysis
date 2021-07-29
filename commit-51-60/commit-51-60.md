@@ -511,3 +511,11 @@ if (inlineVue) { // inlineVue -> cdn
 ```
 
 根据代码上看，更符合语义。
+
+# commit-60 使cdn与vite环境下的vue版本保持一致
+
+使```cdn```上的```vue```版本与使用vite开发的```vue```版本一致。
+
+## 疑惑点：都已经有本地包了，不会使用```cdn```了，再引入version有何意义？
+
+**不是这样的**，```version```字段，在没有本地Vue包的时候，会使用```require('vue/package.json').version```，**这样就可以寻找到vite开发所依赖的vue包的版本号**。
