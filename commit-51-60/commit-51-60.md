@@ -498,3 +498,16 @@ plugins:[
 # commit-58 发布v0.5.0
 
 release v0.5.0
+
+# commit-59 修改变量名称
+
+把```inlineVue```**变量名称**修改为```cdn```，```inlineVue```字段代表是否有本地```node_modules```里的```vue```包，没有则使用```cdnLink```。
+
+```typescript
+let inlineVue = !resolveVue(root).hasLocalVue // inlineVue -> cdn
+if (inlineVue) { // inlineVue -> cdn
+  // 使用cdnLink
+}
+```
+
+根据代码上看，更符合语义。
