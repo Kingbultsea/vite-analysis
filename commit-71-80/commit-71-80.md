@@ -44,3 +44,19 @@ $ yarn dev
 
 release v0.5.2
 
+# commit-74
+
+```package.json```修正入口路径。
+
+# commit-75 修复template与style同时hmr的BUG
+
+修复`<template>`与`<style>`同时变动，触发hmr，只更新`<template>`的BUG。
+
+顺带整理代码。
+
+引起该`bug`的原因是`hmr`优先触发`vue-render`事件，触发后跳过`<style>`的`hmr`的处理了。
+
+# commit-76 v0.5.3
+
+发布`v0.5.3`
+
