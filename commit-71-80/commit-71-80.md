@@ -60,3 +60,124 @@ release v0.5.2
 
 发布`v0.5.3`
 
+# commit-77 重构暴露路径处理器
+
+`publicPath`: 浏览器请求资源路径。
+
+`filePath`: 文件绝对路径。
+
+> 在配置中暴露了一个`resolver`方法，尤大打算让处理文件不再写死。使用者可以修改`publicPath`与`filePath`
+
+(未看见其使用，后续`commit`会继续分析)
+
+# commit-78 添加http协商缓存
+
+```typescript
+export async function cachedRead(ctx: Context, file: string) {
+  // 指示最后一次修改此文件的时间戳，以 POSIX Epoch 以来的毫秒数表示。
+  const lastModified = (await fs.stat(file)).mtimeMs
+  
+  const cached = moduleReadCache.get(file)
+  ctx.set('Cache-Control', 'no-cache')
+  ctx.type = path.basename(file)
+  if (cached && cached.lastModified === lastModified) {
+    ctx.etag = cached.etag
+    ctx.lastModified = new Date(cached.lastModified)
+    ctx.status = 304
+    return cached.content
+  }
+  const content = await fs.readFile(file, 'utf-8')
+  const etag = getETag(content)
+  moduleReadCache.set(file, {
+    content,
+    etag,
+    lastModified
+  })
+  ctx.etag = etag
+  ctx.lastModified = new Date(lastModified)
+  ctx.body = content
+  ctx.status = 200
+}
+```
+
+
+
+添加缓存。
+
+## http中etag和lastModified哪个优先级高
+
+当ETag和Last-Modified同时存在时，服务器先会检查ETag，然后再检查Last-Modified，最终决定返回304还是200。
+
+## 那为什么同时设置两个呢
+
+https://segmentfault.com/q/1010000004200644。两者是and的关系。
+
+ETag 比较的是响应内容的特征值，而Last-Modified 比较的是响应内容的修改时间。这两个是相辅相成的，并不是说有了ETag就不该有Last-Modified，有Last-Modified就不该有ETag。同时传入服务器时，服务器可以根据自己的缓存机制的需要，选择ETag或者是Last-Modified来做缓存判断的依据，甚至可以两个同时参考。
+
+# commit-79 fix测试的BUG
+
+测试启动的时候，会判断是否子线程输出`running`。现在要同步修改成`Running`
+
+```typescript
+test('test', async () => {
+  server = execa(path.resolve(__dirname, '../bin/vite.js'), {
+    cwd: tempDir
+  })
+  await new Promise((resolve) => {
+    server.stdout.on('data', (data) => {
+      if (data.toString().match('Running')) {
+        resolve()
+      }
+    })
+  })
+ })
+```
+
+# commit-80 fix处理模块的BUG
+
+[#15](https://github.com/vitejs/vite/pull/15)
+
+在vite中，所有源文件的`import Lodash from 'lodash'`模块类的都会被改写成`import Lodash from '@modules/lodash'`。
+
+然后在发送该模块的时候，会使用正则去除`@modules`，得到`lodash`。
+
+```typescript
+let module = id = 'lodash'
+const deepIndex = id.indexOf('/')
+
+if (deepIndex > 0) {
+    module = id.splice(0, deepIndex)
+}
+
+// ...
+```
+
+随后根据正则，获取到模块名称`module`。
+
+但是如果引入的是：
+`import { parse } from '@vue/compiler-dom`，我们得到的模块名称为`@vue`，那么就引起错误了。
+
+原本加入`indexOf('/')`这些代码的目的是防止`lodash/index.js`的发生，实际上我们可以用`path.extname`判断是否有拓展名来过滤掉`/index.js`。
+
+## 什么是scope module
+
+所有npm模块都有name，有的模块的name还有scope。scope的命名规则和name差不多，同样不能有url非法字符或者下划线点符号开头。scope在模块name中使用时，以@开头，后边跟一个/ 。package.json中，name的写法如下：
+
+> @somescope/somepackagename
+
+scope是一种把相关的模块组织到一起的一种方式，也会在某些地方影响npm对模块的处理。
+
+带有scope的模块安装在一个子目录中，如果正常的模块安装在node_modules/packagename目录下，那么带有scope的模块安装在node_modules/@myorg/packagename目录下，@myorg就是scope前面加上了@符号，一个scope中可以包含很多个模块。
+
+安装一个带有scope的模块：
+
+> npm install @myorg/mypackage
+
+在package.json中写明一个依赖:
+
+> "dependencies": {
+> "@myorg/mypackage": "^1.3.0"
+> }
+
+如果@符号被省略，那么npm会尝试从github中安装模块，在npm install命令的文档中有说明 https://docs.npmjs.com/cli/install
+
