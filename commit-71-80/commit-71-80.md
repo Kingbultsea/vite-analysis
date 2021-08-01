@@ -100,8 +100,6 @@ export async function cachedRead(ctx: Context, file: string) {
 }
 ```
 
-
-
 添加缓存。
 
 ## http中etag和lastModified哪个优先级高
@@ -113,6 +111,8 @@ export async function cachedRead(ctx: Context, file: string) {
 https://segmentfault.com/q/1010000004200644。两者是and的关系。
 
 ETag 比较的是响应内容的特征值，而Last-Modified 比较的是响应内容的修改时间。这两个是相辅相成的，并不是说有了ETag就不该有Last-Modified，有Last-Modified就不该有ETag。同时传入服务器时，服务器可以根据自己的缓存机制的需要，选择ETag或者是Last-Modified来做缓存判断的依据，甚至可以两个同时参考。
+
+> `mtimeMs`的使用，可以查看commit- 82&83的解析，主要是后续重构把所有用到fs.read的地方都使用缓存，所以需要根据修改时间来判断是否使用缓存
 
 # commit-79 fix测试的BUG
 
