@@ -45,11 +45,11 @@ watcher.handleJSReload = handleJSReload
 
 然后，**服务器会比**对这个客服端发送过来的Etag**是否与服务器的相同**，如果**相同**，就将**If-None-Match**的值设为**false**，返回状态为**304，****客户端**继续**使用本地缓存**，不解析服务器返回的数据。
 
-请求vue文件，判断request请求的`If-None-Match`是否与文件`etag`一致，一致则返回`ctx.status = 200`
+请求`vue组件`，判断request请求的`If-None-Match`是否与文件`etag`一致，一致则返回`ctx.status = 200`
 
 ## 之前不是已经设置过了缓存了吗？
 
-首先说明一下，封装的`cachedRead`只对文件来说适用，对于vue文件来说，是需要编译的。
+首先说明一下，封装的`cachedRead`只对文件来说适用，对于`vue组件`来说，是需要编译的。
 
 为了解决这个问题，尤大不再使用`cacheRead`对于`vue`文件，而是在编译了三大标签（`<style>` `<template>` `<script>`）后使用`etagCacheCheck`：
 
@@ -62,4 +62,106 @@ const etagCacheCheck = (ctx: Context) => {
     // 好奇 为什么不else后返回304? 不然一样无效的 可能是因为想调试方便吧，浏览器点击就弹出源码了，不用查看sources
 }
 ```
+
+# commit-85 添加缓存
+
+为访问`web_modules`使用`cacheRead`。
+
+为访问`node_modules`的文件路径结果添加上缓存，不使用`cacheRead`的原因是跳转:
+
+```typescript
+# serverPluginModules
+
+// resolve from web_modules
+    try {
+      const webModulePath = await resolveWebModule(root, id)
+      if (webModulePath) {
+        idToFileMap.set(id, webModulePath)
+        await cachedRead(ctx, webModulePath)
+        debugModuleResolution(
+          `web_modules: ${id} -> ${getDebugPath(webModulePath)}`
+        )
+        return
+      }
+    } catch (e) {
+      console.error(
+        chalk.red(`[vite] Error while resolving web_modules with id "${id}":`)
+      )
+      console.error(e)
+      ctx.status = 404
+    }
+
+    // resolve from node_modules
+    try {
+      let pkgPath
+      try {
+        pkgPath = resolve(root, `${id}/package.json`)
+      } catch (e) {}
+      if (pkgPath) {
+        const pkg = require(pkgPath)
+        const entryPoint = pkg.module || pkg.main || 'index.js'
+        debugModuleResolution(`node_modules entry: ${id} -> ${entryPoint}`)
+        idToEntryMap.set(id, entryPoint)
+        return ctx.redirect(path.join(ctx.path, entryPoint))
+      }
+      // in case of deep imports like 'foo/dist/bar.js'
+      const modulePath = resolve(root, id)
+      idToFileMap.set(id, modulePath)
+      debugModuleResolution(
+        `node_modules import: ${id} -> ${getDebugPath(modulePath)}`
+      )
+      await cachedRead(ctx, modulePath)
+    } catch (e) {
+      console.error(
+        chalk.red(`[vite] Error while resolving node_modules with id "${id}":`)
+      )
+      console.error(e)
+      ctx.status = 404
+    }
+```
+
+#### 可以利用ctx.redirt跳转
+
+可以使用`return ctx.redirect(path.join(ctx.path, cachedEntry))`的方法，更改请求`path`路径（对于服务端来说，对于一整个`http`是没有影响的）。
+
+# commit-86
+
+为readCache方法设置`If-None-Match`。
+
+```typescript
+# node/util
+function readCache() {
+    // ... 
+    if (ctx.get('If-None-Match') === ctx.tag) {
+        ctx.status = 304
+    }
+    // ...
+}
+
+```
+
+# commit-87 修复windows hmr问题
+
+新增slash包。
+
+## slash包
+
+`resolver.ts`中的`defaultFileToPublic`（转换文件路径到浏览器请求路径）方法，使用`slash`统一转换成`/`
+
+```typescript
+import path from 'path';
+import slash from 'slash';
+
+const string = path.join('foo', 'bar');
+// Unix    => foo/bar
+// Windows => foo\\bar
+
+slash(string);
+// Unix    => foo/bar
+// Windows => foo/bar
+```
+
+# commit-88 v0.6.0
+
+release v0.6.0
 
