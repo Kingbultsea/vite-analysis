@@ -165,3 +165,32 @@ slash(string);
 
 release v0.6.0
 
+# commit-89 介绍变动
+
+### Bug Fixes
+
+- 为windows修复hmr的问题（[commit-53](https://github.com/Kingbultsea/vite-analysis/blob/master/commit-51-60/commit-51-60.md#handlejsreload)）
+- 如果etags匹配上了则返回304 ([e0c7354](https://github.com/vuejs/vite/commit/e0c73543a6c792046f9d7e9a0a481f567f4e21ec))
+- 修复` scoped packages`和引入的相对路径问题 ([#15](https://github.com/vuejs/vite/issues/15)) ([78ae1b7](https://github.com/vuejs/vite/commit/78ae1b745bc5cf269b6ccfc12b129b404f0e9026))
+
+### Features
+
+- 为vue组件请求相关，添加http缓存 ([ecc7219](https://github.com/vuejs/vite/commit/ecc7219786e363988976f15d9223565a34a673eb))
+
+# commit-90
+
+我觉得这个commit没有任何意义，因为304已经return代码了。
+
+```typescript
+if (ctx.status === 304) {
+      return
+}
+
+// ...
+if (ctx.status === 304 && rewriteCache.has(ctx.url)) {
+        debugImportRewrite(`${ctx.url}: serving from cache`)
+        ctx.body = rewriteCache.get(ctx.url)
+}
+
+```
+
