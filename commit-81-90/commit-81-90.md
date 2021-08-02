@@ -165,7 +165,7 @@ slash(string);
 
 release v0.6.0
 
-# commit-89 介绍变动
+# commit-89 介绍变动v0.6.0
 
 ### Bug Fixes
 
@@ -179,7 +179,7 @@ release v0.6.0
 
 # commit-90
 
-我觉得这个commit没有任何意义，因为304已经return代码了。
+我觉得这个commit没有任何意义，因为304已经`return`代码了。
 
 ```typescript
 if (ctx.status === 304) {
