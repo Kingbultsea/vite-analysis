@@ -191,6 +191,4 @@ if (ctx.status === 304 && rewriteCache.has(ctx.url)) {
         debugImportRewrite(`${ctx.url}: serving from cache`)
         ctx.body = rewriteCache.get(ctx.url)
 }
-
 ```
-
