@@ -317,13 +317,24 @@ watcher.on('change', async (file) => {
 
 1. 分析```importerMap```，取出所有```import```了**当前文件的文件路径**。
 2. 如果引入方为```vue```文件，触发```vue-reload```
-3. 如果非`vue`文件（就当是`js`文件），分析是谁引入该`js`文件（称它为`importer`），如果是`vue`组件引入了，则保存在一个数组中，后续遍历触发`vue-reload`事件。如果是`js`文件，分析其是否引入了`@hmr`，如果有，则保存在一个数组中，后续遍历触发`js-update`。以上都没有，则查看`importer`是否有`父importer`，有则重复调用一次该过程`importer`更改为`父importer`，没有则触发`full-reload`。
+3. 如果非`vue`文件（就当是`js`文件），分析是谁引入该`js`文件（称它为`importer`），如果是`vue`组件引入了，则保存在一个数组中，后续遍历触发`vue-reload`事件。如果是`js`文件引入了，且分析`isHMRBoundary`是否有该文件，如果有，则保存在一个数组中，后续遍历触发`js-update`。以上都没有，则查看`importer`是否有`父importer`，有则重复调用一次该过程`importee`更改为`父importer`，没有则触发`full-reload`。
 
-#### 为什么` js ` 引入了`@hmr`才触发`js-update`?
+#### 什么是isHMRBoundary?
 
-todo
+```typescript
+# fc.js源文件
+import { foo } from './foo.js'
+import { hot } from '@hmr'
 
+foo()
 
+hot.accept('./foo.js', ({ foo }) => { // callBack
+  // the callback receives the updated './foo.js' module
+  foo()
+})
+```
+
+`foo.js`，可以分析出`importer`为`fc.js`，`isHMRBoundary`会查找fc.js为键的值（一个Set）是否包含`foo.js`，包含则触发`callback`，不包含则（根据上面文件`import`语句）重复`3`的过程，`importee`从`foo.js`改为`fc.js`。
 
 windows中存在BUG，需要修改:
 
