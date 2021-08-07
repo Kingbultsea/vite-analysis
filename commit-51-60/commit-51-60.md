@@ -54,10 +54,14 @@ function build() {
 
 #### vitePlugin (rollup的插件)
 
+> resolveID这种就是解析文件地址的意思，我们可以返回我们想返回的文件id(也就是地址，相对路径、决定路径)来让rollup加载。
+>
+> resolveID属于hookFirst钩子类型，如果返回null或者undefinded，下一个plugins的resolveId将不会被运行。也就是说谁按照顺序，处理冲突。
+
 ```typescript
 const vitePlugin: Plugin = {
     name: 'vite', // warning与error会被标识为该名称
-    resolveId(id: string) { // 需要处理的id名称，如果返回Null，则load会正常运行，不做任何过滤
+    resolveId(id: string) { // 转换id名称，如果返回Null，则不做任何处理。
       if (id.startsWith('/')) {
         if (id === hmrClientPublicPath) {
           return hmrClientPublicPath
@@ -73,6 +77,7 @@ const vitePlugin: Plugin = {
             external: true
               // 设置为true，将会被设置为相对路径
               // https://github.com/rollup/rollup/issues/3940
+              // 比如转换为： import"https://unpkg.com/vue@3.0.0-beta.4/dist/vue.esm-browser.prod.js";
           }
         }
       }
