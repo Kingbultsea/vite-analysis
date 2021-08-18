@@ -1,8 +1,10 @@
-# commit-31整合```css hmr```
+# 31 - c45e066 整合```css hmr```
 
 把更新渲染```<style>```的代码，整合到```client```中。省去每次提取```<styele>```模块都需要经过服务器语法词汇分析的过程。
 
-# commit-32 http缓存与读取文件的缓存
+
+
+# 32 - ef95a00 http缓存与读取文件的缓存
 
 ### 添加的包
 
@@ -24,8 +26,6 @@ Conditional Get 又名 条件式请求 ，常见实现有```Last-Modified``` 和
 
 > 作者：一团捞面
 > 链接：https://www.jianshu.com/p/e09870b60046
-
-
 
 ### ```cacheRead```
 
@@ -65,7 +65,9 @@ app.use(require('koa-conditional-get')())
 app.use(require('koa-etag')())
 ```
 
-# commit-33 进一步利用LRU
+
+
+# 33 - f6ef1b1 进一步利用LRU
 
 编译```.vue```文件的方法：
 
@@ -84,7 +86,9 @@ export const vueCache = new LRUCache<string, CacheEntry>({
 })
 ```
 
-# commit-34 v0.3.0发布
+
+
+# 34 - 052ac90 v0.3.0发布
 
 ### 我觉得这个版本能用，```<style>```的流程：
 
@@ -99,7 +103,9 @@ export const vueCache = new LRUCache<string, CacheEntry>({
 当新增```<style scoped>```，再去添加```class```样式不起效。
 https://github.com/vuejs/vue-next/issues/3382
 
-# commit-35 304将不再处理内容
+
+
+# 35 - 7b75253 304将不再处理内容
 
 ```modulesPlugin```中判断请求304，将不再处理内容。
 
@@ -123,19 +129,23 @@ app.use(async (ctx, next) => {
 
 根据洋葱模型，```modulesPlugin```判断```304```处于所有中间件执行的最后一个步骤。
 
-# commit-36 v0.3.1
+# 36 - 0f88118 v0.3.1
 
 v0.3.1
 
-# commit-37 删除无用的包
+
+
+# 37 - 2c1b802 删除无用的包
 
 删除```@babel/parser```
 
-# commit-38 v0.3.2
+
+
+# 38 - 1e4a78c v0.3.2
 
 v0.3.2
 
-# commit- 39 构建```js-map```，```js```的```hmr```
+# 39 - 6e66766 构建```js-map```，```js```的```hmr```
 
 目的：创建导入文件的关系图，在```hmr```的时候，可以知道应该热加载哪些文件。
 
@@ -160,11 +170,11 @@ v0.3.2
 
 ### ```hmr.ts```
 
-预期想使用```importeeMap```，获得关系链，进行```HMR```的一些东西。
+使用```importeeMap```，获得关系链，进行```HMR```的一些东西。
 
-未知完整行为~
 
-# commit-40 ```snowPack```
+
+# 40 - a183791 ```snowPack```
 
 https://github.com/vitejs/vite/pull/4
 
@@ -196,3 +206,4 @@ async function resolveWebModule(
   }
 }
 ```
+
