@@ -1,8 +1,10 @@
-# commit-11 annotation
+# 11 - 7f207eb annotation
 
 添加测试注释（准备测试style HMR）。
 
-# commit-12 fix propublishOnly
+
+
+# 12 - 5c0f552 fix propublishOnly
 
 注释。
 
@@ -13,11 +15,15 @@
 }
 ```
 
-# commit-13 v0.1.0发布
+
+
+# 13 - be00e79 v0.1.0发布
 
 修改旧名称 ```vds```为```vite```，包括注释，控制台输出，只是更改名称。
 
-# commit-14 设置npm包含的文件
+
+
+# 14 - a47c406 设置npm上传包含的文件
 
 `files` 字段用于描述我们使用 `npm publish` 命令后推送到 `npm` 服务器的文件列表，如果指定文件夹，则文件夹内的所有内容都会包含进来。我们可以查看下载的 `antd` 的 `package.json` 的`files` 字段，内容如下：
 
@@ -30,7 +36,9 @@
 
 因为```dist```是```build```的文件，```/bin/vite.js```是启动文件，所以这一部分发布到```npm```，提供用户使用即可。
 
-# commit-15 v0.1.1发布
+
+
+# 15 - a4f093a v0.1.1发布
 
 ```json
 {
@@ -39,11 +47,15 @@
 }
 ```
 
-# commit-16  chore readme
+
+
+# 16 - d58893b  chore readme
 
 ```chore: readme```，修改```readme```。
 
-# commit-17 添加ci
+
+
+# 17 - c76ca14 添加ci
 
 ```yml
 version: 2
@@ -88,30 +100,37 @@ workflows:
 
 ```
 
-1. 在自身```Github```上，创建一个```public```仓库，命名为```sbuild```，并把上传这一份代码。
-2. 使用该```github```账号登录```circleci```网站，在目录列表点击```Set Up Project ```。
+setp1: 在自身```Github```上，创建一个```public```仓库，命名为```sbuild```，并把上传这一份代码。
+
+step2: 使用该```github```账号登录```circleci```网站，在目录列表点击```Set Up Project ```。
 
 ![](./circle-view.png)
 
-3. 点击``Start Building``
+step3: 点击``Start Building``
 
 ![](./circle-test.png)
 
 （失败可以不用管，这是运行test命令失败，在不同平台有些不一样）
 
-# commit-18 test: fix pupeteer on ci
+
+
+# 18 - 97de06e test: fix pupeteer on ci
 
 修复在```ci```环境下的，```puppeteer```报错问题（如上报错）。
 
 ![](circle-sussess.png)
 
-# commit-19 使用本包，如果用户没有vue
+
+
+# 19 - bb9baa2 使用本包，如果用户没有vue
 
 ### moduleResolver.ts
 
 整理代码，如果用户本地路径没有寻找到```vue.runtime.esm-browser.js```，则从本包中读取```vue.runtime.esm-browser.js```。
 
-# commit-20 fix: vue路径 & compile-sfc路径
+
+
+# 20 - 0d5a2a4 fix: vue路径 & compile-sfc路径
 
 ### moduleResolver.ts
 

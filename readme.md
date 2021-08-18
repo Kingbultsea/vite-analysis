@@ -1,4 +1,4 @@
-# commit-1 根基
+# 1 - 820c2cf 根基
 
 ### npm bin的知识点
 
@@ -121,7 +121,7 @@ socket.addEventListener('close', () => {
 
 
 
-# commit-2 
+# 2 - 4a04d81 
 
 ### server.js 新增serve-handler
 
@@ -146,7 +146,7 @@ const fileWatcher = chokidar.watch(process.cwd(), {
 
 
 
-# commit-3 新增+优化
+# 3 - 33488fe 新增+优化
 
 ### moduleRewriter.js
 
@@ -200,7 +200,7 @@ __script.__hmrId = "/file-vue/test.vue"
 
 
 
-# commit-4 重构
+# 4 - bfb4b91 重构
 
 ### parseSFC.js阅读文件，修改成promise的方法
 
@@ -276,7 +276,7 @@ createServer()
 
 
 
-# commit-5 使用TS重构内容
+# 5 - 91d76bf 使用TS重构内容
 
 ### lint-staged
 
@@ -431,7 +431,7 @@ server与client公用（使用extends: "../../tsconfig.base.json"）。
 
 
 
-# commit-6 添加测试
+# 6 - e718bd5 添加测试
 
 ### server/server.ts
 
@@ -762,7 +762,9 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 
 假如你的```setup```的内容改变，需要重新运行，那么就要经过```2```的处理，所以就需要重新渲染。
 
-# commit-7 去除git add
+
+
+# 7 - 3e64a74 去除git add
 
 ### 更新package.json
 
@@ -784,7 +786,9 @@ export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
 去除```git add```，现在把改动文件丢进暂存区，将不会把你的文件格式化了。在```commit```后，你会发现进行了格式化。
 可以自己尝试一下把某个单括号改成双括号，你会发现```commit```提交后自动变成单括号了。
 
-# commit-8 优化cwd
+
+
+# 8 - 93286b9 优化cwd
 
 ### 优化process.cwd(）
 
@@ -833,7 +837,9 @@ try {
 
 以上两个寻找行为与require.resolve一致，仅仅是入口方式不同。
 
-# commit-9 整合优化
+
+
+# 9 - f4382f1 整合优化
 
 ### 整理```vueCompiler.ts```
 
@@ -859,7 +865,7 @@ if (file.endsWith('.vue')) {
 
 
 
-# commit-10 style HMR
+# 10 - 140f2b2 style HMR
 
 ### 新增事件
 
