@@ -1,4 +1,4 @@
-# commit-21 v0.1.2发布
+# 21 - 3e0ff79 v0.1.2发布
 
 ```json
 {
@@ -7,7 +7,9 @@
 }
 ```
 
-# commit-22 重构使用koa，废弃server-handler
+
+
+# 22 - c74b24e 重构使用koa，废弃server-handler
 
 均使用koa中间件的形式改写```vueMiddleware.ts moduleMiddleware.ts hmrWatcher.ts```
 
@@ -35,7 +37,9 @@ app.use(require('koa-static')(cwd))
 4. ```koa2-history-api-fallback```。
 5. ```koa-static```。
 
-# commit-23 index.html的指向
+
+
+# 23 - a307eeb index.html的指向
 
 去除```koa```的中间件```koa2-history-api-fallback```，采用手写的方法```src/server/middlewares/historyFallback.ts```。
 
@@ -75,7 +79,9 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 
 因为使用```koa2-history-api-fallback```，会把所有get请求都指向一个文件，如果请求一个```.vue```组件，在进行流程的第```4```步，内容必然会被改写成```index.html```文件。
 
-# commit-24 改写```index.html```的```<script>```
+
+
+# 24 - 4ed433a 改写```index.html```的```<script>```
 
 曾经```index.html```请求页面，页面中的标签，引入```main.js```，经过```moduleRewriter.ts```处理，```import a from 'a'```改写成```import a from '__module/a'```。
 
@@ -83,7 +89,9 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 
 优化目的提前一步改写处理。
 
-# commit-25
+
+
+# 25 - 36f1a18
 
 ### 更改名称:
 
@@ -97,7 +105,9 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 
 通过中间件，好管理代码。
 
-# commit-26 v0.2.0发布
+
+
+# 26 - 1c95964 v0.2.0发布
 
 这个版本的```<style>```新增标签后，触发了```rerender```，会导致新增```<style>```无效
 
@@ -108,7 +118,9 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 }
 ```
 
-# commit-27 准备```vite```配置
+
+
+# 27 - df93fda 准备```vite```配置
 
 ### ```build```前需要删除dist: 
 
@@ -127,11 +139,15 @@ export const historyFallbackMiddleware: Middleware = ({ cwd, app }) => {
 
 启动```vite```，以命令行的形式去输入配置（这块有BUG，还没完善）
 
-# commit-28 ```cwd```名称优化
+
+
+# 28 - 87324af ```cwd```名称优化
 
 ```cwd```参数名称改为```root```，尤大觉得因为寻找模式，直接改为```root```会更加贴切（我觉得尤大觉得）。
 
-# commit-29 重构```rewriteImports```
+
+
+# 29 - 5780a2a 重构```rewriteImports```
 
 ### 引入```es-module-lexer```
 
@@ -164,6 +180,8 @@ function rewriteImports(source: string) {
 }
 ```
 
-# commit-30 名称优化
+
+
+# 30 - 9efbb0e 名称优化
 
 更改参数名称，更改原有的```src/server/middleware``` 为```src/server/plugins```
