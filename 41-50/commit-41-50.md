@@ -182,8 +182,6 @@ alert( str.match(/^\d+/gm) ); // 1, 2, 33
 
 ```
 
-
-
 更改事件名称：
 
 ```reload``` -> ```vue-reload```
