@@ -1,4 +1,4 @@
-# commit-41 修改特殊路径名称
+# 41 - ae3c83a 修改特殊路径名称
 
 处理特殊路径```__```改为```@```
 
@@ -22,8 +22,6 @@
 3. 调用```walkImportChain```：还没写完，目前支持的是把Vue和普通js文件分类(然而，vue文件不会进入到上图的①|②)。
 
 4. ```importee```路径下的文件，每一个都调用方法(还没写)
-
-   
 
 #### 回顾一下流程
 
@@ -150,7 +148,7 @@ async function handleVueSFCReload(file: string, servedPath: string) {
 
 
 
-# commit-42
+# 42 - 3e5076d
 
 ## 小知识点
 
@@ -206,23 +204,27 @@ alert( str.match(/^\d+/gm) ); // 1, 2, 33
 
 更换事件名称，补上```isHotBoundary```方法，并更改名称为```isHMRBoundary```。
 
-
-
 ## 总结
 
 为了```js```文件的```hmr```做准备
 
-# commit-43 优化寻找包的方式
+
+
+# 43 - c11cfc8 优化寻找包的方式
 
 之前使用```require()```，现在读取```package.json```文件，识别```module```、```main```字段，如果没有则直接寻找```index.js```文件。
 
-# commit-44 优化sourcemap获取名
+
+
+# 44 - b100683 优化sourcemap获取名
 
 在```sourcemap```功能，使用```path.basename```，获取路径的名称。
 
 ![sourcemap](./sourcemap.png)
 
-# commit-45 修复css bug
+
+
+# 45 - 35b23e1 修复css bug
 
 ```
 + await resolveCompiler
@@ -230,11 +232,15 @@ alert( str.match(/^\d+/gm) ); // 1, 2, 33
 
 为```style lang="x"``` 做准备
 
-# commit-46 修改README
+
+
+# 46 - eb5af6a 修改README
 
 chore: 更新reademe。把vue改成vue3。（莫非尤大想兼容v2?）
 
-# commit-47
+
+
+# 47 - e1cba33 v0.4.0
 
 ## package.json
 
@@ -242,7 +248,9 @@ v4.0.0发布，这里讨论到发布，看不大懂尤大的ci。
 
 https://hub.docker.com/r/vuejs/ci
 
-# commit-48 代码整理
+
+
+# 48 - 169e31f 代码整理
 
 ## 重构监听文件的方式
 
@@ -250,7 +258,9 @@ https://hub.docker.com/r/vuejs/ci
 
 其次可以暴露给各种```plugins```使用，比如commit-49中，监听文件变动后删除缓存。
 
-# commit-49  modules使用缓存
+
+
+# 49 - 868aa21  modules使用缓存
 
 ## ```server/plugins/modules.ts```
 
@@ -265,11 +275,15 @@ https://hub.docker.com/r/vuejs/ci
 
 比如在``` rewriteImports```出现报错的时候，捕获该错误，输出```e```。
 
-# commit-50 添加debug包
+
+
+# 50 - aa7c8d0 添加debug包
+
+> 在windows中无法使用。
 
 ## package.json
 
-添加```debug@4.1.1```，去除```console.log```，增强提示。
+添加```debug@4.1.1```，去除```console.log```，增强提示。添加```chalk```，增强提示，用在```node/build.ts```。
 
 从尤大写的提示语句，可以发现是为了方便调试，因为目前还测试覆盖还很低，需要一些提示去调试。
 
@@ -280,9 +294,5 @@ https://hub.docker.com/r/vuejs/ci
 3. ```serve.ts```
 
 这块也是方便了我们去查看vite到底做了些啥，可以有一个反馈。
-
-
-
-添加```chalk```，增强提示，用在```node/build.ts```
 
 https://www.npmjs.com/package/chalk
