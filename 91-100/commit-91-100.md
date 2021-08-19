@@ -1,12 +1,16 @@
-# commit-91 修改字符
+# 91 - 43fe56f 修改字符
 
 `util.ts`中的`readCache`方法里面写错`etag`字母（原tag）。
 
-# commit-92 缓存304
+
+
+# 92 - 875c0c6 缓存304
 
 我在commit-84提过，为什么在`serverPluginVue.ts`中缓存不设置304，现在补充上。
 
-# commit-93 代码整理
+
+
+# 93 - 02b68d5 代码整理
 
 整理`commit-92`的代码。
 
@@ -22,13 +26,17 @@ if (ctx.etag !== ctx.get('If-None-Match')) {
 ctx.status = ctx.etag === ctx.get('If-None-Match') ? 304 : 200
 ```
 
-# commit-94 调整LRU值(降低)
+
+
+# 94 - 488fec3 调整LRU值(降低)
 
 `rewriteCache`(涉及`index.html`与所有被改写`import`语句的文件)大小从`65535`改小成`1024`。
 
 （话说我去看`lru-cache`的文档，也不知道这个max对应的单位是多少...，如果有知道的童鞋请告诉我）
 
-# commit-95 设置node运行版本
+
+
+# 95 - aceb5f7 设置node运行版本
 
 指定项目运行node版本的范围。
 
@@ -40,11 +48,15 @@ ctx.status = ctx.etag === ctx.get('If-None-Match') ? 304 : 200
 }
 ```
 
-# commit-96 v0.6.1
+
+
+# 96 - c3d87db v0.6.1
 
 release v0.6.1
 
-# commit-97 介绍v0.6.1变动
+
+
+# 97 - df07231 介绍v0.6.1变动
 
 ### Bug Fixes
 
@@ -53,7 +65,7 @@ release v0.6.1
 
 我真觉得那个`import语句`的304没有任何意义（详情看commit-90）。
 
-# commit-98 优化
+# 98 - 5794291 优化
 
 对于已经被处理过的请求，不再经过`serverPluginServe`。
 
@@ -74,7 +86,9 @@ app.use(require('koa-static')(root)) // 静态文件处理
 
 > serverPluginServe用于处理一些静态文件请求与一些header服务
 
-# commit-99 添加import文件后缀
+
+
+# 99 - d00523f 自动添加import文件后缀
 
 那个没有用的304已经被去除了，正如`commit-90`所说的一样。
 
@@ -88,7 +102,9 @@ if (!/\.\w+/.test(pathname)) {
 }
 ```
 
-# commit-100 修改resolver的名称
+
+
+# 100 - 8965b65 修改resolver的名称
 
 曾经`public`为浏览器请求使用，现在把`public`名称更改为`request`更符合语义了。
 
