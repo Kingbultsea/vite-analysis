@@ -1,21 +1,16 @@
-# commit-51 重构server路径
+# 51 - 86147d1 重构server路径
 
 ```server```端，名称统一改成```node```端，即更改路径/文件夹名称
 
 新增了两个文件:
 
-1. ```src/node/build.ts```
+- ```src/node/build.ts```：后续分析
 
-   无
-
-2. ```src/node/index.ts```
-
-   ```typescript
-   export * from './server'
-   ```
+- ```src/node/index.ts```: `export * from './server'`
 
 
-# commit-52 ```rollup```与```postcss```，打包
+
+# 52 - 0ea7970 ```rollup```与```postcss```，添加`vite build`打包功能
 
 ## ```package.json```
 
@@ -132,13 +127,9 @@ https://github.com/vuejs/rollup-plugin-vue/blob/next/src/index.ts
 
 和我们```dev```同一个作用。
 
-
-
 ### @rollup/plugin-node-resolve
 
 处理Node的第三方包。
-
-
 
 ### @rollup/plugin-replace
 
@@ -150,8 +141,6 @@ require('@rollup/plugin-replace')({
 })
 ```
 
-
-
 ### rollup-plugin-terser
 
 压缩代码。
@@ -160,8 +149,6 @@ require('@rollup/plugin-replace')({
 // 类型
 type Last<T extends any[]> = [never, ...T][T['length']]
 ```
-
-
 
 ### rollup配置options
 
@@ -194,8 +181,6 @@ const { output } = await bundle.generate({
 })
 ```
 
-
-
 ### 过程
 
 ```vitePlugin```中的```load```方法并未处理```src```资源，仅处理了标签内的内容
@@ -217,32 +202,33 @@ while ((match = scriptRE.exec(indexContent))) {
 return script
 ```
 
-1. 配置好```rollup```，删除旧的文件夹后，创建出新的空的文件夹(生成代码的位置)，这个步骤是，vite需要再对输出的文件改写。
+- 配置好```rollup```，删除旧的文件夹后，创建出新的空的文件夹(生成代码的位置)，这个步骤是，vite需要再对输出的文件改写。
 
-2. 植入```css```文件到```html文件模板```。
-
-   ```typescript
-   `<link rel="stylesheet" href="/${filename}">`
-   // 注意是link
-   ```
-
-3. ```rollup```打包出来的```css```，全部字符串堆起来，交给```postcss```与```postcss```的插件处理，并生成css文件（等于改写）。
-
-4. 检测有没有本地vue包，没有则cdn```https://unpkg.com/vue@${vueVersion}/dist/vue.esm-browser.prod.js```，以```<script src="" >```的形式
-
-5. rollup打包出来的js，不改写，但是在```html```模板植入```<script/>```标签。
-
-6. 最后，根据```html模板```（带```<link/> <script/>```），生成```html```文件。
+- 植入```css```文件到```html文件模板```。
 
 
+```typescript
+`<link rel="stylesheet" href="/${filename}">`
+// 注意是link
+```
+
+- ```rollup```打包出来的```css```，全部字符串堆起来，交给```postcss```与```postcss```的插件处理，并生成css文件（等于改写）。
+
+- 检测有没有本地vue包，没有则cdn```https://unpkg.com/vue@${vueVersion}/dist/vue.esm-browser.prod.js```，以```<script src="" >```的形式
+
+- rollup打包出来的js，不改写，但是在```html```模板植入```<script/>```标签。
+
+- 最后，根据```html模板```（带```<link/> <script/>```），生成```html```文件。
 
 ## node/resolveVue.ts
 
 根据打包环境，如果运行在浏览器，则使用```esm-browser```包，如果在node环境，则使用```esm-bundler```，后者不带编译器。
 
-# commit-53
 
-修改测试的命令，路径为src。
+
+# 53 - 7444c3e `--root src`
+
+修改测试的命令，路径为`src`。
 
 ## 再细谈文件改动
 
@@ -357,7 +343,9 @@ watcher.on('change', async (file) => {
   })
 ```
 
-# commit-54
+
+
+# 54 - e8f9175 chore
 
 更新rollup-plugin-vue包
 
@@ -368,7 +356,9 @@ watcher.on('change', async (file) => {
 }
 ```
 
-# commit-55 支持css module
+
+
+# 55 - fbbdb19 `vue`组件支持`css module`
 
 ```vue
 <style module>
@@ -420,7 +410,7 @@ __script.__file = "E:\\vite\\test\\fixtures\\Comp.vue"
 export default __script
 ```
 
-## vue css module知识
+## `vue css module`知识
 
 ```typescript
 const publicPropertiesMap: Record<
@@ -482,11 +472,15 @@ updateStyle("92a6df80-0", "/Comp.vue?type=style&index=0")
 
 注：新增会触发```vue-reload```事件（```!isEqual(descriptor.script, prevDescriptor.script)```引起的）
 
-# commit-55 错误提示
+
+
+# 55 - b6d1d06 错误提示 （不小心写到55了，实际是56）
 
 在各种错误捕获中，增加提示。
 
-# commit-56 在plugin-vue中使用css预处理器
+
+
+# 56 - 5a7a4e2 在plugin-vue中使用css预处理器
 
 ```typescript
 plugins:[
@@ -508,17 +502,23 @@ plugins:[
 
 [rollup-plugin-vue配置传送门](https://github.com/vuejs/rollup-plugin-vue#options)
 
-# commit-57 修改readme
+
+
+# 57 - 3ba7e8e 修改readme
 
 从版本^0.5.0开始，你可以运行vite build打包应用程序并将其部署到生产环境中。
 
 在内部，我们使用一个默认配置来生成构建。目前有意没有公开方法来配置构建——但我们可能会在稍后阶段解决这个问题。
 
-# commit-58 发布v0.5.0
+
+
+# 58 - 300af62 发布v0.5.0
 
 release v0.5.0
 
-# commit-59 修改变量名称
+
+
+# 59 - 63e5e28 修改变量名称
 
 把```inlineVue```**变量名称**修改为```cdn```，```inlineVue```字段代表是否有本地```node_modules```里的```vue```包，没有则使用```cdnLink```。
 
@@ -531,10 +531,13 @@ if (inlineVue) { // inlineVue -> cdn
 
 根据代码上看，更符合语义。
 
-# commit-60 使cdn与vite环境下的vue版本保持一致
 
-使```cdn```上的```vue```版本与使用vite开发的```vue```版本一致。
+
+# 60 - b3d69b1 使`cdn`与`vite`环境下的`vue`版本保持一致
+
+使```cdn```上的```vue```版本与使用`vite`开发的```vue```版本一致。
 
 ## 疑惑点：都已经有本地包了，不会使用```cdn```了，再引入version有何意义？
 
-**不是这样的**，```version```字段，在没有本地Vue包的时候，会使用```require('vue/package.json').version```，**这样就可以寻找到vite开发所依赖的vue包的版本号**。
+**不是这样的**，```version```字段，在没有本地`Vue`包的时候，会使用```require('vue/package.json').version```，**这样就可以寻找到`vite`开发所依赖的`vue`包的版本号**。
+
