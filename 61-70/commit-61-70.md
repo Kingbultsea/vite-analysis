@@ -1,4 +1,4 @@
-# commit-61 readme
+# 61 - 7eda441  readme
 
 新增build参数配置（但是未实现）
 
@@ -6,11 +6,11 @@
 
 - `vite build --cdn`:  从CDN中引入```vue```，这样可以使构建速度更快，但总的来说，页面负载将更大，因为```VUE API```不会被```tree-shaking```。
 
-# commit-62 v0.5.1
+# 62 - 28a436a v0.5.1
 
 release v0.5.1
 
-# commit-63 readme
+# 63 - 093cc00 readme
 
 补充```npx vite```，```npx```会自动把```vite```下载在```npm```缓存中。（使用后会自动删除，所以不用担心无法拉取最新的```vite```的问题）
 
@@ -24,19 +24,25 @@ release v0.5.1
 >
 >[原文](https://www.ruanyifeng.com/blog/2019/02/npx.html)
 
-# commit-64 修改readme的单词错误
+# 64 - d43d779 修改readme的单词错误
 
 [fix#10](https://github.com/vitejs/vite/pull/10)，说起来也好笑... 混一个```vite```的```contributor```也太容易了吧。
 
-# commit-65 ```vite```服务添加```ip```提醒
+
+
+# 65 - f402c7b ```vite```服务添加```ip```提醒
 
 [feat #8](https://github.com/vitejs/vite/pull/8)，在使用```vite```开启服务的时候，我们可能不想使用```localhost```，想使用```ip```的方式。
 
-# commit-66 readme
+
+
+# 66 - 59992ea readme
 
 尤大觉得```vite```很快，就在```readme```文档大标题，加了一个⚡符号。
 
-# commit-67 fix ```style```的```hmr```问题
+
+
+# 67 - 6cef3fe fix ```style```的```hmr```问题
 
 在```commit-67```之前，```module```的改变，不会触发```hmr```，现在暂时触发```vue-reload```事件，快速修复问题为主，我们在做业务出现```bug```的时候，可以借鉴用简单的方法先解决问题，用注释去标记正确做法。
 
@@ -61,15 +67,21 @@ if (
     }
 ```
 
-# commit-68 127.0.0.1修改为localhost
+
+
+# 68 - 81d3399 127.0.0.1修改为localhost
 
 在[fix#10](https://github.com/vitejs/vite/pull/10)中，优化```localhost```成为```ip```地址，但是我们可以把```127.0.0.1```输出的提示替换为```localhost```
 
-# commit-69 readme英语语法错误
+
+
+# 69 - 8c8879c readme英语语法错误
 
 [fix#12](https://github.com/vitejs/vite/pull/12)，英文语法错误。
 
-# commit-70
+
+
+# 70 - 40f170c
 
 ## 实现```vite build --cdn```
 
