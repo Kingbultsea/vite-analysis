@@ -214,15 +214,15 @@ return script
 
 - ```rollup```打包出来的```css```，全部字符串堆起来，交给```postcss```与```postcss```的插件处理，并生成css文件（等于改写）。
 
-- 检测有没有本地vue包，没有则cdn```https://unpkg.com/vue@${vueVersion}/dist/vue.esm-browser.prod.js```，以```<script src="" >```的形式
+- 检测有没有本地vue包，没有则cdn ```https://unpkg.com/vue@${vueVersion}/dist/vue.esm-browser.prod.js```，以```<script src="" >```的形式
 
 - rollup打包出来的js，不改写，但是在```html```模板植入```<script/>```标签。
 
-- 最后，根据```html模板```（带```<link/> <script/>```），生成```html```文件。
+- 最后，根据```html模板```（注入```<link/> <script/>```），生成```html```文件。
 
 ## node/resolveVue.ts
 
-根据打包环境，如果运行在浏览器，则使用```esm-browser```包，如果在node环境，则使用```esm-bundler```，后者不带编译器。
+根据打包环境，如果运行在浏览器，则使用```esm-browser```包，如果在node环境，则使用```esm-bundler```，**后者不带编译器**，减少体积。
 
 
 

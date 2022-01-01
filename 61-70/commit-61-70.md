@@ -124,5 +124,5 @@ const shared = 'shared';
 console.log(shared);
 ```
 
-简单说明就是不使用```export```，如果```import```引入了```export```的内容，那么会在使用```import```的文件中，复制该内容。
+
 
